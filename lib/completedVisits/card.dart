@@ -21,7 +21,6 @@ class VisitCard extends StatelessWidget {
             Text(visit.visitLocation),
           ],
         ),
-        trailing: Text(visit.visitStatus),
       ),
     );
   }

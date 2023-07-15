@@ -1,10 +1,16 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as rtc_local_view;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as rtc_remote_view;
+import 'package:doctor_doctorsonhand/completedVisits/model.dart';
+import 'package:doctor_doctorsonhand/completedVisits/view.dart';
 import 'token.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get.dart';
+import 'package:doctor_doctorsonhand/Appointments/upcoming.dart';
+import 'package:doctor_doctorsonhand/Report/form.dart';
+import 'package:doctor_doctorsonhand/Report/model.dart';
+import 'package:doctor_doctorsonhand/Report/view.dart';
 
 class VideoCallScreen extends StatefulWidget {
   const VideoCallScreen({Key? key,required this.doctorId,
@@ -19,6 +25,9 @@ class VideoCallScreen extends StatefulWidget {
 
 class _VideoCallScreenState extends State<VideoCallScreen> {
   final VideoCallController controller = Get.put(VideoCallController());
+  final CompletedVisitsController completedVisitsController = Get.put(CompletedVisitsController());
+  final AppointmentController appointmentController = Get.put(AppointmentController());
+
 
   // final  AgoraClient _client = AgoraClient(
   //     agoraConnectionData:
@@ -31,6 +40,9 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
   final _infoStrings = <String>[];
   //Future<String> token = generateToken(channelName);
   bool muted = false;
+  bool _channelLeft = false;
+  bool _joinSuccessMessageShown = false;
+
   late RtcEngine _engine;
   String app_id = "6d23c50fff654240b43df4285a16a3b8";
   //String channelName = "test";
@@ -62,6 +74,9 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
     _users.clear();
     // destroy sdk
     _engine.leaveChannel();
+    _channelLeft = true; //
+    _joinSuccessMessageShown = false;
+
     _engine.destroy();
     super.dispose();
   }
@@ -78,6 +93,35 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       "width":160,"height":120,"frameRate":5,"bitRate":45
     }}
   """);
+  }
+
+  void endMeeting() {
+    Visit visit = Visit(
+      patientName: widget.patientId,
+      visitTime: getCurrentTime(),
+      visitDate: getCurrentDate(),
+      visitLocation: "4316 139 Avenue",
+      visitReason: "Hear Burn",
+    );
+
+    completedVisitsController.addCompletedVisit(visit);
+    completedVisitsController.update();
+    print(completedVisitsController.visits      );
+    appointmentController.removeAppointment(widget.patientId);
+
+    //Get.back(result: true);
+
+  }
+  String getCurrentTime() {
+    DateTime now = DateTime.now();
+    String formattedTime = "${now.hour}:${now.minute}";
+    return formattedTime;
+  }
+
+  String getCurrentDate() {
+    DateTime now = DateTime.now();
+    String formattedDate = "${now.year}-${now.month}-${now.day}";
+    return formattedDate;
   }
 
   // Future<void> _generateToken() async {
@@ -119,7 +163,11 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       joinChannelSuccess: (channel, uid, elapsed) {
         setState(() {
           final info = 'onJoinChannel: $channel, uid: $uid';
-          _infoStrings.add(info);
+          if (!_channelLeft && !_joinSuccessMessageShown) {
+            // Check if the channel is not left and the join success message has not been shown
+            _infoStrings.add(info);
+            _joinSuccessMessageShown = true; // Set the flag to true
+          }
         });
       },
       leaveChannel: (stats) {
@@ -152,6 +200,41 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       },
     ));
   }
+  void _showReportForm(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Builder(
+          builder: (context) {
+            return ReportForm(
+              doctorName: 'Dr. John Doe',
+              patientName: widget.patientId,
+              onSave: (report) {
+                //onComplete();
+                // TODO: Save the report to the list of cards in the report screen
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // void _showReportForm(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return ReportForm(
+  //         doctorName: 'Dr. John Doe',
+  //         patientName: widget.patientId,
+  //         onSave: (report) {
+  //           //onComplete();
+  //           // TODO: Save the report to the list of cards in the report screen
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _showViewCounter(){
     return Container(
@@ -179,49 +262,52 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
 
   /// Toolbar layout
   Widget _toolbar() {
-    return Container(
-      alignment: Alignment.bottomCenter,
-      padding: const EdgeInsets.symmetric(vertical: 48),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          RawMaterialButton(
-            onPressed: _onToggleMute,
-            child: Icon(
-              muted ? Icons.mic_off : Icons.mic,
-              color: muted ? Colors.white : Colors.blueAccent,
-              size: 20.0,
+    return Padding(
+      padding: const EdgeInsets.all(25.0),
+      child: Container(
+        alignment: Alignment.bottomCenter,
+        padding: const EdgeInsets.symmetric(vertical: 38),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RawMaterialButton(
+              onPressed: _onToggleMute,
+              child: Icon(
+                muted ? Icons.mic_off : Icons.mic,
+                color: muted ? Colors.white : Colors.blueAccent,
+                size: 20.0,
+              ),
+              shape: CircleBorder(),
+              elevation: 2.0,
+              fillColor: muted ? Colors.blueAccent : Colors.white,
+              padding: const EdgeInsets.all(12.0),
             ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: muted ? Colors.blueAccent : Colors.white,
-            padding: const EdgeInsets.all(12.0),
-          ),
-          RawMaterialButton(
-            onPressed: () => _onCallEnd(context),
-            child: Icon(
-              Icons.call_end,
-              color: Colors.white,
-              size: 35.0,
+            RawMaterialButton(
+              onPressed: () => _onCallEnd(context),
+              child: Icon(
+                Icons.call_end,
+                color: Colors.white,
+                size: 35.0,
+              ),
+              shape: CircleBorder(),
+              elevation: 2.0,
+              fillColor: Colors.redAccent,
+              padding: const EdgeInsets.all(15.0),
             ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.redAccent,
-            padding: const EdgeInsets.all(15.0),
-          ),
-          RawMaterialButton(
-            onPressed: _onSwitchCamera,
-            child: Icon(
-              Icons.switch_camera,
-              color: Colors.blueAccent,
-              size: 20.0,
-            ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.white,
-            padding: const EdgeInsets.all(12.0),
-          )
-        ],
+            RawMaterialButton(
+              onPressed: _onSwitchCamera,
+              child: Icon(
+                Icons.switch_camera,
+                color: Colors.blueAccent,
+                size: 20.0,
+              ),
+              shape: CircleBorder(),
+              elevation: 2.0,
+              fillColor: Colors.white,
+              padding: const EdgeInsets.all(12.0),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -241,10 +327,135 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                 left:  MediaQuery.of(context).size.width *0.9,
                 child: _showViewCounter()),
             _toolbar(),
+
+            Positioned(
+              left: 70,
+              bottom: 10,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // showDialog(
+                      //   context: context,
+                      //   builder: (context) {
+                      //     return ReportForm(
+                      //       doctorName: 'Dr. John Doe',
+                      //       patientName: widget.patientId, onSave: (Report ) {  },
+                      //     );
+                      //     // return AlertDialog(
+                      //     //   title: Text('Report Form'),
+                      //     //   content: ReportForm(
+                      //     //     doctorName: 'Dr. John Doe',
+                      //     //     patientName: widget.patientId, onSave: (Report ) {  },
+                      //     //   ),
+                      //     //   actions: [
+                      //     //     TextButton(
+                      //     //       onPressed: () {
+                      //     //         Navigator.of(context).pop();
+                      //     //       },
+                      //     //       child: Text('Cancel'),
+                      //     //     ),
+                      //     //     ElevatedButton(
+                      //     //       onPressed: () {
+                      //     //         endMeeting();
+                      //     //         _onCallEnd(context);
+                      //     //       },
+                      //     //       child: Text('Submit'),
+                      //     //     ),
+                      //     //   ],
+                      //     // );
+                      //   },
+                     // );
+                      _showReportForm(context);
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                        const Color(0xff575de3),
+                      ),
+                    ),
+                    child: const Text('Add Report'),
+                  ),
+                  SizedBox(width: 10,),
+                  ElevatedButton(
+                    onPressed: () {
+                      _onCallEnd(context);
+                      endMeeting();
+
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                        const Color(0xff575de3),
+                      ),
+                    ),
+                    child: const Text('End appointment '),
+                  ),
+
+                ],
+              ),
+            ),
+
           ],
 
         ),
       ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      // floatingActionButton: ElevatedButton(
+      //   onPressed: () {
+      //     showDialog(
+      //       context: context,
+      //       builder: (context) {
+      //         return ReportForm(
+      //           doctorName: 'Dr. John Doe',
+      //           patientName: widget.patientId, onSave: (Report ) {  },
+      //         );
+      //         // return AlertDialog(
+      //         //   title: Text('Report Form'),
+      //         //   content: ReportForm(
+      //         //     doctorName: 'Dr. John Doe',
+      //         //     patientName: widget.patientId, onSave: (Report ) {  },
+      //         //   ),
+      //         //   actions: [
+      //         //     TextButton(
+      //         //       onPressed: () {
+      //         //         Navigator.of(context).pop();
+      //         //       },
+      //         //       child: Text('Cancel'),
+      //         //     ),
+      //         //     ElevatedButton(
+      //         //       onPressed: () {
+      //         //         endMeeting();
+      //         //         _onCallEnd(context);
+      //         //       },
+      //         //       child: Text('Submit'),
+      //         //     ),
+      //         //   ],
+      //         // );
+      //       },
+      //     );
+      //   },
+      //   style: ButtonStyle(
+      //     backgroundColor: MaterialStateProperty.all<Color>(
+      //       const Color(0xff575de3),
+      //     ),
+      //   ),
+      //   child: const Text('Appointment Completed'),
+      // ),
+
+      // floatingActionButton: ElevatedButton(
+      //   onPressed: () {
+      //     _showReportForm(context);
+      //    // endMeeting();
+      //    _onCallEnd(context);
+      //
+      //   },
+      //   style: ButtonStyle(
+      //     backgroundColor: MaterialStateProperty.all<Color>(
+      //       const Color(0xff575de3),
+      //     ),
+      //   ),
+      //   child: const Text('Appointment Completed'),
+      // ),
     );
   }
 

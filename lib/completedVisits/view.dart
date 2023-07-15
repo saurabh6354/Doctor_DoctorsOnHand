@@ -1,41 +1,96 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'model.dart';
 import 'card.dart';
 
+class CompletedVisitsController extends GetxController {
+  var visits = <Visit>[].obs;
+  final _prefs = SharedPreferences.getInstance();
+
+  @override
+  void onInit() async {
+    super.onInit();
+    final prefs = await _prefs;
+    final visitsJson = prefs.getString('visits');
+    if (visitsJson != null) {
+      final visitsList = jsonDecode(visitsJson) as List<dynamic>;
+      visits.assignAll(visitsList.map((visitJson) => Visit.fromJson(visitJson)));
+    }
+  }
+
+
+  Future<void> clearCompletedVisits() async {
+    visits.clear();
+    final prefs = await _prefs;
+    prefs.remove('visits');
+    update();
+  }
+
+  void addCompletedVisit(Visit visit) async {
+      // Check if the visit is a duplicate
+      bool isDuplicate = visits.any((v) =>
+      v.patientName == visit.patientName &&
+          v.visitDate == visit.visitDate);
+
+      if (isDuplicate) {
+        // Display an error message and return without adding the visit
+        Get.snackbar(
+          'Error',
+          'This visit has already been completed.',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return;
+      }
+    visits.add(visit);
+    final prefs = await _prefs;
+    final visitsJson = jsonEncode(visits.toList());
+    prefs.setString('visits', visitsJson);
+    update();
+  }
+
+
+}
+
+
+
 class CompletedVisitsScreen extends StatelessWidget {
-  final List<Visit> visits = [
-    Visit(
-      patientName: "Patient 1",
-      visitTime: "14:30 - 15:30 AM",
-      visitDate: "2021-10-01",
-      visitLocation: "4316 139 Avenue",
-      visitReason: "Hear Burn",
-      visitStatus: "Completed",
-    ),
-    Visit(
-      patientName: "Patient 2",
-      visitTime: "10:00 - 11:00 AM",
-      visitDate: "2021-10-02",
-      visitLocation: "1234 Main Street",
-      visitReason: "Checkup",
-      visitStatus: "Completed",
-    ),
-    // Add more visits here
-  ];
+  final CompletedVisitsController completedVisitsController = Get.find();
+  //
+  // void updateVisits() {
+  //   controller.update();
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Completed Visits"),
+        title: Text('Completed Visits'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete // Icons.add;
+    ),
+            onPressed: () {
+             completedVisitsController.clearCompletedVisits();
+            },
+          ),
+        ],
       ),
-      body: ListView.builder(
-        itemCount: visits.length,
-        itemBuilder: (context, index) {
-          return VisitCard(
-            visit: visits[index],
-          );
-        },
+      body: GetBuilder<CompletedVisitsController>(
+       // init: controller,
+        builder: (controller) => ListView.builder(
+          itemCount: controller.visits.length,
+          itemBuilder: (context, index) {
+            Visit visit = controller.visits[index];
+            return VisitCard(
+              visit: visit,
+            );
+          },
+        ),
       ),
     );
   }

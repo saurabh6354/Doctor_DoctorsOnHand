@@ -1,4 +1,7 @@
 import 'package:doctor_doctorsonhand/HomePage/homepage.dart';
+import 'package:doctor_doctorsonhand/Report/form.dart';
+import 'package:doctor_doctorsonhand/Report/report.dart';
+import 'package:doctor_doctorsonhand/Report/view.dart';
 import 'package:doctor_doctorsonhand/signin/login.dart';
 import 'package:doctor_doctorsonhand/video_calll/meet.dart';
 import 'package:doctor_doctorsonhand/video_calll/token_generation.dart';
@@ -57,6 +60,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      initialBinding: BindingsBuilder(() {
+        Get.put(CompletedVisitsController());
+      }),
       home: MyLogin(),
       //home: const CircularProgressIndicator(),
       getPages: [
@@ -66,7 +72,40 @@ class MyApp extends StatelessWidget {
         // GetPage(name: '/book',  page: () => BookingCalendarDemoApp()),
         // GetPage(name: '/detail',  page: () => DetailScreen()),
         GetPage(name: '/appointment', page: () => AppointmentScreen()),
-GetPage(name: '/completed', page: () => CompletedVisitsScreen()),
+          GetPage(name: '/completed', page: () => CompletedVisitsScreen()),
+        GetPage(name: '/report', page: () => ReportScreen()),
+        // GetPage(name: '/report', page: () => ReportScreen(patient: Patient(id: '1', name: 'John' , age: 23, reports: [
+        //   Report(
+        //     id: '1',
+        //     date: DateTime.now(),
+        //     doctor: 'Dr. Smith',
+        //     diagnosis: 'Flu',
+        //     prescription: 'Rest and fluids',
+        //   ),
+        //   Report(
+        //     id: '2',
+        //     date: DateTime.now(),
+        //     doctor: 'Dr. Johnson',
+        //     diagnosis: 'Broken arm',
+        //     prescription: 'Cast and pain medication',
+        //   ),
+        // ],),          )),
+        // GetPage(name: '/report', page: () => ReportScreen(patient: Patient(id: '1', name: 'John' , age: 23, reports: [
+        //   Report(
+        //     id: '1',
+        //     date: DateTime.now(),
+        //     doctor: 'Dr. Smith',
+        //     diagnosis: 'Flu',
+        //     prescription: 'Rest and fluids',
+        //   ),
+        //   Report(
+        //     id: '2',
+        //     date: DateTime.now(),
+        //     doctor: 'Dr. Johnson',
+        //     diagnosis: 'Broken arm',
+        //     prescription: 'Cast and pain medication',
+        //   ),
+        // ],),          )),
       ],
 
 
