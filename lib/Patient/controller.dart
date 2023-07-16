@@ -31,16 +31,18 @@ class PatientController extends GetxController {
     Get.dialog(
       AlertDialog(
         title: Text(visit.title),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Visit Date: ${visit.date}'),
-            const SizedBox(height: 8),
-            Text('Diagnosis: ${visit.diagnosis}'),
-            const SizedBox(height: 8),
-            Text('Report: ${visit.report}'),
-          ],
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Visit Date: ${visit.date}'),
+              const SizedBox(height: 8),
+              Text('Diagnosis: ${visit.diagnosis}'),
+              const SizedBox(height: 8),
+              Text('Report: ${visit.report}'),
+            ],
+          ),
         ),
         actions: [
           TextButton(

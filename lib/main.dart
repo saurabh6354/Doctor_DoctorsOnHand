@@ -74,38 +74,6 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/appointment', page: () => AppointmentScreen()),
           GetPage(name: '/completed', page: () => CompletedVisitsScreen()),
         GetPage(name: '/report', page: () => ReportScreen()),
-        // GetPage(name: '/report', page: () => ReportScreen(patient: Patient(id: '1', name: 'John' , age: 23, reports: [
-        //   Report(
-        //     id: '1',
-        //     date: DateTime.now(),
-        //     doctor: 'Dr. Smith',
-        //     diagnosis: 'Flu',
-        //     prescription: 'Rest and fluids',
-        //   ),
-        //   Report(
-        //     id: '2',
-        //     date: DateTime.now(),
-        //     doctor: 'Dr. Johnson',
-        //     diagnosis: 'Broken arm',
-        //     prescription: 'Cast and pain medication',
-        //   ),
-        // ],),          )),
-        // GetPage(name: '/report', page: () => ReportScreen(patient: Patient(id: '1', name: 'John' , age: 23, reports: [
-        //   Report(
-        //     id: '1',
-        //     date: DateTime.now(),
-        //     doctor: 'Dr. Smith',
-        //     diagnosis: 'Flu',
-        //     prescription: 'Rest and fluids',
-        //   ),
-        //   Report(
-        //     id: '2',
-        //     date: DateTime.now(),
-        //     doctor: 'Dr. Johnson',
-        //     diagnosis: 'Broken arm',
-        //     prescription: 'Cast and pain medication',
-        //   ),
-        // ],),          )),
       ],
 
 

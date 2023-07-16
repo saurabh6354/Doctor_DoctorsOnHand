@@ -61,39 +61,41 @@ class _ReportFormState extends State<ReportForm> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.update ? 'Update Report' : 'Complete Appointment'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Doctor: ${widget.doctorName}'),
-            Text('Patient: ${widget.patientName}'),
-            TextFormField(
-              controller: _conditionController,
-              decoration: InputDecoration(labelText: 'Condition'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a condition';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _prescriptionController,
-              decoration: InputDecoration(labelText: 'Prescription'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a prescription';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _detailsController,
-              decoration: InputDecoration(labelText: 'Details'),
-              maxLines: 3,
-            ),
-          ],
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Doctor: ${widget.doctorName}'),
+              Text('Patient: ${widget.patientName}'),
+              TextFormField(
+                controller: _conditionController,
+                decoration: InputDecoration(labelText: 'Condition'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a condition';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _prescriptionController,
+                decoration: InputDecoration(labelText: 'Prescription'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a prescription';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _detailsController,
+                decoration: InputDecoration(labelText: 'Details'),
+                maxLines: 3,
+              ),
+            ],
+          ),
         ),
       ),
       actions: [
