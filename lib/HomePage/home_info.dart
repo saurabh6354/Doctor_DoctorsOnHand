@@ -27,7 +27,7 @@ class HomeInfo extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(width * 0.04),
                   child: const Text(
-                    "Hi! Jhon",
+                    "Hi! David",
                      //   "\nHow are you today?",
                     style: TextStyle(
                       fontFamily: "Roboto",
@@ -88,7 +88,7 @@ class HomeInfo extends StatelessWidget {
                             width: width * 0.42,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color: Colors.white70,
+                              color: Color(0xFFf4e9f3),
                               boxShadow: const [
                                 BoxShadow(
                                   color: Colors.grey,
@@ -152,7 +152,7 @@ class HomeInfo extends StatelessWidget {
                             width: width * 0.42,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color: Colors.white70,
+                              color: Color(0xFFf4e9f3),
                               boxShadow: const [
                                 BoxShadow(
                                   color: Colors.grey,
@@ -296,7 +296,7 @@ class HomeInfo extends StatelessWidget {
                             width: width * 0.42,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color: Colors.white70,
+                              color: Color(0xFFf4e9f3),
                               boxShadow: const [
                                 BoxShadow(
                                   color: Colors.grey,
@@ -366,7 +366,7 @@ class HomeInfo extends StatelessWidget {
                             width: width * 0.42,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color: Colors.white70,
+                              color: Color(0xFFf4e9f3),
                               boxShadow: const [
                                 BoxShadow(
                                   color: Colors.grey,

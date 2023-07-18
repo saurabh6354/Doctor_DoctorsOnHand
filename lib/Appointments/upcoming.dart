@@ -16,7 +16,7 @@ class AppointmentController extends GetxController {
       appointmentTime: "14:30 - 15:30 AM",
       appointmentDate: "Today",
       appointmentLocation: "436 139 Avenue",
-      appointmentReason: "Hear Burn",
+      appointmentReason: "Heart Burn",
     ),
     Appointment(
       patientName: "Patient 2",
@@ -85,6 +85,22 @@ class AppointmentScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Upcoming Appointments"),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                stops: [
+                  0.1,
+                  0.6,
+                ],
+                colors: [
+                  Colors.blue,
+                  Colors.teal,
+                ],
+              )),
+        ),
+
       ),
       body: Obx(
             () => ListView.builder(

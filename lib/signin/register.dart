@@ -45,6 +45,22 @@ class _MyRegisterState extends State<MyRegister> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    stops: [
+                      0.1,
+                      0.6,
+                    ],
+                    colors: [
+                      Colors.blue,
+                      Colors.teal,
+                    ],
+                  )),
+            ),
+
             backgroundColor: Colors.transparent,
             elevation: 0,
           ),

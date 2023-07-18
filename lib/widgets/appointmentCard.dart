@@ -34,7 +34,12 @@ class IncomingCard extends StatelessWidget {
           height: height * 0.21,
           padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
           decoration: BoxDecoration(
-            color: Colors.blueGrey.withOpacity(0.8),
+            //color: Color(0xff78bea4),
+            gradient: LinearGradient(
+              colors: [Color(0xff78bea4), Colors.blueGrey.withOpacity(0.1)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
             borderRadius: BorderRadius.circular(20),
             //boxShadow: kElevationToShadow[6],
             boxShadow: const [

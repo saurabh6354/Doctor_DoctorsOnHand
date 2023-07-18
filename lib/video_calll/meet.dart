@@ -101,7 +101,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       visitTime: getCurrentTime(),
       visitDate: getCurrentDate(),
       visitLocation: "4316 139 Avenue",
-      visitReason: "Hear Burn",
+      visitReason: "Heart Burn",
     );
 
     completedVisitsController.addCompletedVisit(visit);
@@ -317,6 +317,22 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Video Consultation '),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                stops: [
+                  0.1,
+                  0.6,
+                ],
+                colors: [
+                  Colors.blue,
+                  Colors.teal,
+                ],
+              )),
+        ),
+
       ),
       backgroundColor: Colors.black,
       body: Center(
